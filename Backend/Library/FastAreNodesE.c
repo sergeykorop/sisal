@@ -88,6 +88,8 @@ PNODE n2;
     if ( i2 == NULL )
       return( FALSE );
 
+    /* Nasty bug where RBuild for unions overly optimized */
+    if ( i1->iport != i2->iport ) return FALSE;
     if ( !AreEdgesEqual( i1, i2 ) )
       return( FALSE );
 
@@ -103,6 +105,11 @@ PNODE n2;
 
 /*
  * $Log$
+ * Revision 1.3  2002/11/09 07:40:31  patmiller
+ * Mistakenly assumed that edges into different
+ * ports of a RBuild (when used as UBuild) could
+ * be merged.  I'm surprised this was never exercised.
+ *
  * Revision 1.2  2001/01/02 09:16:45  patmiller
  * Now ANSI compliant, but still a pthread problem
  *
