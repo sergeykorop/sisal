@@ -1,7 +1,40 @@
-/* $Log$
-/* Revision 1.1  2000/12/31 17:57:53  patmiller
-/* Initial revision
+/**************************************************************************/
+/* FILE   **************          vector.c         ************************/
+/**************************************************************************/
+/* Author: Dave Cann                                                      */
+/* Update: Patrick Miller -- Ansi support (Dec 2000)                      */
+/* Copyright (C) University of California Regents                         */
+/**************************************************************************/
 /*
+ * $Log$
+ * Revision 1.2  2001/01/02 09:16:45  patmiller
+ * Now ANSI compliant, but still a pthread problem
+ *
+ * Revision 1.1.1.1  2000/12/31 17:57:53  patmiller
+ * Well, here is the first set of big changes in the distribution
+ * in 5 years!  Right now, I did a lot of work on configuration/
+ * setup (now all autoconf), breaking out the machine dependent
+ * #ifdef's (with a central acconfig.h driven config file), changed
+ * the installation directories to be more gnu style /usr/local
+ * (putting data in the /share/sisal14 dir for instance), and
+ * reduced the footprint in the top level /usr/local/xxx hierarchy.
+ *
+ * I also wrote a new compiler tool (sisalc) to replace osc.  I
+ * found that the old logic was too convoluted.  This does NOT
+ * replace the full functionality, but then again, it doesn't have
+ * 300 options on it either.
+ *
+ * Big change is making the code more portably correct.  It now
+ * compiles under gcc -ansi -Wall mostly.  Some functions are
+ * not prototyped yet.
+ *
+ * Next up: Full prototypes (little) checking out the old FLI (medium)
+ * and a new Frontend for simpler extension and a new FLI (with clean
+ * C, C++, F77, and Python! support).
+ *
+ * Pat
+ *
+ *
  * Revision 1.3  1994/06/16  21:31:17  mivory
  * info format and option changes M. Y. I.
  *
@@ -13,7 +46,9 @@
  * Carry along work to propagate the new pragmas.  Also fixed up to report
  * reasons why loops don't vectorize / parallelize.  Split off some of the
  * work from if2part.c into slice.c stream.c vector.c
- * */
+ */
+/**************************************************************************/
+
 
 #include "world.h"
 
@@ -40,7 +75,7 @@ static int vbc      = 0;
 /* LOCAL  **************     PartIsVecCandidate    ************************/
 /**************************************************************************/
 /* PURPOSE: True iff the input values to this node are constant in this   */
-/*	    context (e.g. loop body).					  */
+/*          context (e.g. loop body).                                     */
 /**************************************************************************/
 
 static int PartIsInvariant( n )
@@ -104,89 +139,89 @@ int PartIsVecCandidate( f,ReasonP )
     for ( nn = f->F_GEN->G_NODES->nsucc; nn != NULL; nn = nn->nsucc ) 
       switch ( nn->type ) {
        case IFScatterBufPartitions:
-	if ( (e = FindExport( f->F_BODY, nn->exp->iport )) == NULL ) {
-	  vrg++;
-	  *ReasonP = "Scatter not used in body";
-	  return( FALSE );
-	}
+        if ( (e = FindExport( f->F_BODY, nn->exp->iport )) == NULL ) {
+          vrg++;
+          *ReasonP = "Scatter not used in body";
+          return( FALSE );
+        }
 
-	if ( e->dst->type != IFABuildAT ) {
-	  vrg++;
-	  *ReasonP = "Scattered value not directed into an array build";
-	  return( FALSE );
-	}
+        if ( e->dst->type != IFABuildAT ) {
+          vrg++;
+          *ReasonP = "Scattered value not directed into an array build";
+          return( FALSE );
+        }
 
-	ee = e->dst->exp;
+        ee = e->dst->exp;
 
-	if ( ee == NULL ) { 
-	  vrg++;
-	  *ReasonP = "Value from scattered array build not used";
-	  return( FALSE );
-	}
+        if ( ee == NULL ) { 
+          vrg++;
+          *ReasonP = "Value from scattered array build not used";
+          return( FALSE );
+        }
 
-	if ( ee->sr != 1 ) {
-	  vrg++;
-	  *ReasonP = "Value from scattered array build is shared";
-	  return( FALSE );
-	}
+        if ( ee->sr != 1 ) {
+          vrg++;
+          *ReasonP = "Value from scattered array build is shared";
+          return( FALSE );
+        }
 
-	if ( !IsSGraph( ee->dst ) ) {
-	  vrg++;
-	  *ReasonP = "Value from scattered array build is re-used";
-	  return( FALSE );
-	}
+        if ( !IsSGraph( ee->dst ) ) {
+          vrg++;
+          *ReasonP = "Value from scattered array build is re-used";
+          return( FALSE );
+        }
 
-	if ( (e = FindExport( f->F_RET, ee->iport )) == NULL ) {
-	  vrg++;
-	  *ReasonP = "Scattered array build not used in returns clause";
-	  return( FALSE );
-	}
+        if ( (e = FindExport( f->F_RET, ee->iport )) == NULL ) {
+          vrg++;
+          *ReasonP = "Scattered array build not used in returns clause";
+          return( FALSE );
+        }
 
-	if ( e->pm > 0 || e->pl > 0 ) {
-	  vrg++;
-	  *ReasonP = "Returned array is being shared";
-	  return( FALSE );
-	}
+        if ( e->pm > 0 || e->pl > 0 ) {
+          vrg++;
+          *ReasonP = "Returned array is being shared";
+          return( FALSE );
+        }
 
-	for ( ee = f->F_BODY->exp; ee != NULL; ee = ee->esucc ) {
-	  if ( ee->eport != e->eport )
-	    continue;
+        for ( ee = f->F_BODY->exp; ee != NULL; ee = ee->esucc ) {
+          if ( ee->eport != e->eport )
+            continue;
 
-	  switch ( ee->dst->type ) {
-	   case IFSGraph:
-	    if ( ee->iport != 0 ) {
-	      vrg++;
-	      *ReasonP = "Vector candidate value is grounded in body";
-	      return( FALSE );
-	    }
+          switch ( ee->dst->type ) {
+           case IFSGraph:
+            if ( ee->iport != 0 ) {
+              vrg++;
+              *ReasonP = "Vector candidate value is grounded in body";
+              return( FALSE );
+            }
 
-	    break;
+            break;
 
-	   case IFReduceAT:
-	   case IFRedLeftAT:
-	   case IFRedRightAT:
-	   case IFRedTreeAT:
-	    if ( !(ee->pmark) ) {
-	      vrg++;
-	      *ReasonP = "Non-parallel reduction of vector candidate";
-	      return( FALSE );
-	    }
+           case IFReduceAT:
+           case IFRedLeftAT:
+           case IFRedRightAT:
+           case IFRedTreeAT:
+            if ( !(ee->pmark) ) {
+              vrg++;
+              *ReasonP = "Non-parallel reduction of vector candidate";
+              return( FALSE );
+            }
 
-	    break;
+            break;
 
-	   default:
-	    vrg++;
-	    *ReasonP = "Non-vector operation leading to vectorizable return";
-	    return( FALSE );
-	  }
-	}
+           default:
+            vrg++;
+            *ReasonP = "Non-vector operation leading to vectorizable return";
+            return( FALSE );
+          }
+        }
 
-	break;
+        break;
 
        default:
-	vrg++;
-	*ReasonP = "Non-vector generator";
-	return( FALSE );
+        vrg++;
+        *ReasonP = "Non-vector generator";
+        return( FALSE );
       }
   }
   /* STOP:  CRAY ONLY ********************* */
@@ -206,9 +241,9 @@ int PartIsVecCandidate( f,ReasonP )
     /* THE FIRST AElement IMPORT MUST BE TO A K PORT VALUE.                */
     for ( n = f->F_BODY->G_NODES; n != NULL; n = n->nsucc ) {
       if ( PartIsInvariant( n ) ) {
-	vbinvar++;
-	*ReasonP = "Invariant operation in body";
-	return( FALSE );
+        vbinvar++;
+        *ReasonP = "Invariant operation in body";
+        return( FALSE );
       }
 
       switch ( n->type ) {
@@ -221,30 +256,30 @@ int PartIsVecCandidate( f,ReasonP )
        case IFDouble:
        case IFTrunc:
        case IFSingle:
-	break;
+        break;
 
        case IFAElement:
-	if ( IsConst( n->imp ) ) {
-	  *ReasonP = "Invariant access to an array";
-	  return( FALSE );
-	}
+        if ( IsConst( n->imp ) ) {
+          *ReasonP = "Invariant access to an array";
+          return( FALSE );
+        }
 
-	if ( !IsSGraph( n->imp->src ) ) {
-	  *ReasonP = "Access to a non-imported array";
-	  return( FALSE );
-	}
+        if ( !IsSGraph( n->imp->src ) ) {
+          *ReasonP = "Access to a non-imported array";
+          return( FALSE );
+        }
 
-	if ( FindImport( f, n->imp->eport ) == NULL ) {
-	  *ReasonP = "An array is not imported";
-	  return( FALSE );
-	}
+        if ( FindImport( f, n->imp->eport ) == NULL ) {
+          *ReasonP = "An array is not imported";
+          return( FALSE );
+        }
 
-	break;
+        break;
   
        default:
-	vbn++;
-	*ReasonP = "Only +, -, *, /, neg, abs, and a[i] operations can be vectorized";
-	return( FALSE );
+        vbn++;
+        *ReasonP = "Only +, -, *, /, neg, abs, and a[i] operations can be vectorized";
+        return( FALSE );
       }
     }
 
@@ -254,34 +289,34 @@ int PartIsVecCandidate( f,ReasonP )
     /* THE CONTROL MUST BE USED AS MUST AN AELEMENT NODE.             */
     for ( e = f->F_BODY->exp; e != NULL; e = e->esucc ) {
       if ( e->pm > 0 || e->cm == -1 ) {
-	vprag++;
-	*ReasonP = "Control is shared";
-	return( FALSE );
+        vprag++;
+        *ReasonP = "Control is shared";
+        return( FALSE );
       }
   
       if ( e->eport == c->iport ) {
-	cu++;
-	switch ( e->dst->type ) {
-	 case IFPlus:
-	 case IFMinus:
-	  for ( ee = e->dst->exp; ee != NULL; ee = ee->esucc )
-	    if ( ee->dst->type != IFAElement ) {
-	      vbc++;
-	      *ReasonP = "Plus/minus operation leads to a non a[i] operation";
-	      return( FALSE );
-	    }
+        cu++;
+        switch ( e->dst->type ) {
+         case IFPlus:
+         case IFMinus:
+          for ( ee = e->dst->exp; ee != NULL; ee = ee->esucc )
+            if ( ee->dst->type != IFAElement ) {
+              vbc++;
+              *ReasonP = "Plus/minus operation leads to a non a[i] operation";
+              return( FALSE );
+            }
 
-	  break;
+          break;
 
-	 case IFAElement:
-	  /* an = TRUE; */
-	  break;
+         case IFAElement:
+          /* an = TRUE; */
+          break;
 
-	 default:
-	  vbc++;
-	  *ReasonP = "Control can only be used by +, -, and a[i]";
-	  return( FALSE );
-	}
+         default:
+          vbc++;
+          *ReasonP = "Control can only be used by +, -, and a[i]";
+          return( FALSE );
+        }
       }
     }
 
@@ -315,56 +350,56 @@ int PartIsVecCandidate( f,ReasonP )
     switch ( e->info->type ) {
      case IF_ARRAY:
       if ( !cRay ) {
-	vrtype++;
-	*ReasonP = "Trying to reduce/gather arrays instead of elements";
-	return( FALSE );
+        vrtype++;
+        *ReasonP = "Trying to reduce/gather arrays instead of elements";
+        return( FALSE );
       }
 
       /* START: CRAY ONLY ********************* */
       if ( !IsBasic( e->info->A_ELEM ) ) {
-	vrtype++;
-	*ReasonP = "Array of non-scalars";
-	return( FALSE );
+        vrtype++;
+        *ReasonP = "Array of non-scalars";
+        return( FALSE );
       }
 
       switch ( e->dst->type ) {
        case IFSGraph:
-	if ( e->iport != 0 ) {
-	  vrtype++;
-	  *ReasonP = "Grounded value in returns clause";
-	  return( FALSE );
-	}
+        if ( e->iport != 0 ) {
+          vrtype++;
+          *ReasonP = "Grounded value in returns clause";
+          return( FALSE );
+        }
 
-	break;
+        break;
 
        case IFReduceAT:
        case IFRedLeftAT:
        case IFRedRightAT:
        case IFRedTreeAT:
-	if ( e->pm > 0 || (!(e->pmark)) ) {
-	  vrtype++;
-	  *ReasonP = "Non-parallel or shared reduction";
-	  return( FALSE );
-	}
+        if ( e->pm > 0 || (!(e->pmark)) ) {
+          vrtype++;
+          *ReasonP = "Non-parallel or shared reduction";
+          return( FALSE );
+        }
 
-	if ( (ee = FindImport( f->F_BODY, e->eport )) == NULL ) {
-	  vrtype++;
-	  *ReasonP = "Return export error";
-	  return( FALSE );
-	}
+        if ( (ee = FindImport( f->F_BODY, e->eport )) == NULL ) {
+          vrtype++;
+          *ReasonP = "Return export error";
+          return( FALSE );
+        }
 
-	if ( ee->src->type != IFABuildAT ) {
-	  vrtype++;
-	  *ReasonP = "Return export cannot be built in place";
-	  return( FALSE );
-	}
+        if ( ee->src->type != IFABuildAT ) {
+          vrtype++;
+          *ReasonP = "Return export cannot be built in place";
+          return( FALSE );
+        }
 
-	break;
+        break;
 
        default:
-	vrtype++;
-	*ReasonP = "Return export error (bad destination)";
-	return( FALSE );
+        vrtype++;
+        *ReasonP = "Return export error (bad destination)";
+        return( FALSE );
       }
 
       break;
@@ -372,9 +407,9 @@ int PartIsVecCandidate( f,ReasonP )
 
      case IF_RECORD:
       if ( !cRay ) {
-	vrtype++;
-	*ReasonP = "Trying to vectorize a record";
-	return( FALSE );
+        vrtype++;
+        *ReasonP = "Trying to vectorize a record";
+        return( FALSE );
       }
 
       /* START: CRAY ONLY ********************* */
@@ -393,86 +428,86 @@ int PartIsVecCandidate( f,ReasonP )
      case IF_MULTIPLE:
       switch ( e->info->A_ELEM->type ) {
        case IF_ARRAY:
-	if ( !cRay ) {
-	  vrtype++;
-	  *ReasonP = "Cannot vectorize array[non-scalar]";
-	  return( FALSE );
-	}
+        if ( !cRay ) {
+          vrtype++;
+          *ReasonP = "Cannot vectorize array[non-scalar]";
+          return( FALSE );
+        }
 
-	/* START: CRAY ONLY ********************* */
-	if ( !IsBasic( e->info->A_ELEM->A_ELEM ) ) {
-	  vrtype++;
-	  *ReasonP = "Cannot vectorize array[array[non-scalar]]";
-	  return( FALSE );
-	}
+        /* START: CRAY ONLY ********************* */
+        if ( !IsBasic( e->info->A_ELEM->A_ELEM ) ) {
+          vrtype++;
+          *ReasonP = "Cannot vectorize array[array[non-scalar]]";
+          return( FALSE );
+        }
      
-	switch ( e->dst->type ) {
-	 case IFSGraph:
-	  if ( e->iport != 0 ) {
-	    vrtype++;
-	    *ReasonP = "Non grounded multiple in loop";
-	    return( FALSE );
-	  }
+        switch ( e->dst->type ) {
+         case IFSGraph:
+          if ( e->iport != 0 ) {
+            vrtype++;
+            *ReasonP = "Non grounded multiple in loop";
+            return( FALSE );
+          }
      
-	  break;
+          break;
      
-	 case IFReduceAT:
-	 case IFRedLeftAT:
-	 case IFRedRightAT:
-	 case IFRedTreeAT:
-	  if ( e->pm > 0 || (!(e->pmark)) ) {
-	    vrtype++;
-	    *ReasonP = "Shared or non-parallel reduction";
-	    return( FALSE );
-	  }
+         case IFReduceAT:
+         case IFRedLeftAT:
+         case IFRedRightAT:
+         case IFRedTreeAT:
+          if ( e->pm > 0 || (!(e->pmark)) ) {
+            vrtype++;
+            *ReasonP = "Shared or non-parallel reduction";
+            return( FALSE );
+          }
      
-	  if ( (ee = FindImport( f->F_BODY, e->eport )) == NULL ) {
-	    vrtype++;
-	    *ReasonP = "Return export type error (missing type)";
-	    return( FALSE );
-	  }
+          if ( (ee = FindImport( f->F_BODY, e->eport )) == NULL ) {
+            vrtype++;
+            *ReasonP = "Return export type error (missing type)";
+            return( FALSE );
+          }
      
-	  if ( ee->src->type != IFABuildAT ) {
-	    vrtype++;
-	    *ReasonP = "Return export type error (source not built in place)";
-	    return( FALSE );
-	  }
+          if ( ee->src->type != IFABuildAT ) {
+            vrtype++;
+            *ReasonP = "Return export type error (source not built in place)";
+            return( FALSE );
+          }
 
-	  break;
+          break;
 
-	 default:
-	  vrtype++;
-	  *ReasonP = "Some nebulous return export type error";
-	  return( FALSE );
-	}
+         default:
+          vrtype++;
+          *ReasonP = "Some nebulous return export type error";
+          return( FALSE );
+        }
 
-	break;
-	/* STOP:  CRAY ONLY ********************* */
+        break;
+        /* STOP:  CRAY ONLY ********************* */
 
        case IF_RECORD:
-	if ( !cRay ) {
-	  vrtype++;
-	  *ReasonP = "Trying to reduce records";
-	  return( FALSE );
-	}
+        if ( !cRay ) {
+          vrtype++;
+          *ReasonP = "Trying to reduce records";
+          return( FALSE );
+        }
 
-	/* START: CRAY ONLY ********************* */
-	if ( IsABRecord( e->info->A_ELEM ) ) break;
+        /* START: CRAY ONLY ********************* */
+        if ( IsABRecord( e->info->A_ELEM ) ) break;
 
-	vrtype++;
-	*ReasonP = "Trying to vectorize non-block records";
-	return( FALSE );
-	/* STOP:  CRAY ONLY ********************* */
+        vrtype++;
+        *ReasonP = "Trying to vectorize non-block records";
+        return( FALSE );
+        /* STOP:  CRAY ONLY ********************* */
 
        case IF_INTEGER:
        case IF_REAL:
        case IF_DOUBLE:
-	break;
+        break;
   
        default:
-	vrtype++;
-	*ReasonP = "Bad element type for return export";
-	return( FALSE );
+        vrtype++;
+        *ReasonP = "Bad element type for return export";
+        return( FALSE );
       }
 
       break;
@@ -489,22 +524,22 @@ int PartIsVecCandidate( f,ReasonP )
     /* START: NOT NOT NOT CRAY */
     if ( !cRay ) {
       if ( UsageCount( f->F_RET, e->eport ) != 1 ) {
-	for ( ee = f->F_RET->exp; ee != NULL; ee = ee->esucc )
-	  if ( ee->eport == e->eport ) {
-	    if ( ee->dst->type != IFAGatherAT ) {
-	      vrfan++;
-	      *ReasonP = "Return fanout not gathered in place";
-	      return( FALSE );
-	    }
+        for ( ee = f->F_RET->exp; ee != NULL; ee = ee->esucc )
+          if ( ee->eport == e->eport ) {
+            if ( ee->dst->type != IFAGatherAT ) {
+              vrfan++;
+              *ReasonP = "Return fanout not gathered in place";
+              return( FALSE );
+            }
 
-	    /* FIRST (LOWER BOUND) OR FIFTH (SIZE) */
-	    if ( ee->dst->imp != ee && 
-		ee->dst->imp->isucc->isucc->isucc != ee ) {
-	      vrfan++;
-	      *ReasonP = "Return fanout can only control lower bound or size of return";
-	      return( FALSE );
-	    }
-	  }
+            /* FIRST (LOWER BOUND) OR FIFTH (SIZE) */
+            if ( ee->dst->imp != ee && 
+                ee->dst->imp->isucc->isucc->isucc != ee ) {
+              vrfan++;
+              *ReasonP = "Return fanout can only control lower bound or size of return";
+              return( FALSE );
+            }
+          }
       }
     }
     /* STOP:  NOT NOT NOT CRAY */
@@ -526,9 +561,9 @@ int PartIsVecCandidate( f,ReasonP )
      case IFRedTreeAT:
      case IFReduceAT:
       if ( !cRay ) {
-	vrn++;
-	*ReasonP = "Invalid reduction";
-	return( FALSE );
+        vrn++;
+        *ReasonP = "Invalid reduction";
+        return( FALSE );
       }
 
       break;
@@ -538,8 +573,8 @@ int PartIsVecCandidate( f,ReasonP )
      case IFRedRight:
      case IFRedTree:
       if ( nopred ) {
-	*ReasonP = "You used the secret -R option and have a reduction";
-	return( FALSE );
+        *ReasonP = "You used the secret -R option and have a reduction";
+        return( FALSE );
       }
 
       switch ( n->imp->CoNsT[0] ) {
@@ -547,17 +582,17 @@ int PartIsVecCandidate( f,ReasonP )
        case REDUCE_PRODUCT:
        case REDUCE_GREATEST:
        case REDUCE_LEAST:
-	if ( n->imp->isucc->isucc->isucc != NULL ) {
-	  vrrf++;
-	  *ReasonP = "Reduction is filtered";
-	  return( FALSE );
-	}
-	break;
+        if ( n->imp->isucc->isucc->isucc != NULL ) {
+          vrrf++;
+          *ReasonP = "Reduction is filtered";
+          return( FALSE );
+        }
+        break;
                     
        default:
-	vrn++;
-	*ReasonP = "Reduce catenate cannot vectorize";
-	return( FALSE );
+        vrn++;
+        *ReasonP = "Reduce catenate cannot vectorize";
+        return( FALSE );
       }
 
       break;
@@ -576,12 +611,12 @@ int PartIsVecCandidate( f,ReasonP )
        case IF_INTEGER:
        case IF_REAL:
        case IF_DOUBLE:
-	break;
+        break;
 
        default:
-	vbtype++;
-	*ReasonP = "Body defines a non-scalar value";
-	return( FALSE );
+        vbtype++;
+        *ReasonP = "Body defines a non-scalar value";
+        return( FALSE );
       }
 
     /* ALL BODY SUBGRAPH EXPORTS MUST CARRY int, real, double, OR array */
@@ -593,43 +628,43 @@ int PartIsVecCandidate( f,ReasonP )
        case IF_INTEGER:
        case IF_REAL:
        case IF_DOUBLE:
-	break;
+        break;
 
        case IF_ARRAY:
-	switch ( e->info->A_ELEM->type ) {
-	 case IF_INTEGER:
-	 case IF_REAL:
-	 case IF_DOUBLE:
-	  if ( (ii = FindImport( f, e->eport )) == NULL ) {
-	    *ReasonP = "Vector value not imported";
-	    return( FALSE );
-	  }
+        switch ( e->info->A_ELEM->type ) {
+         case IF_INTEGER:
+         case IF_REAL:
+         case IF_DOUBLE:
+          if ( (ii = FindImport( f, e->eport )) == NULL ) {
+            *ReasonP = "Vector value not imported";
+            return( FALSE );
+          }
 
-	  if ( ii->cm == -1 ) {
-	    *ReasonP = "Vector value being shared";
-	    return( FALSE );
-	  }
+          if ( ii->cm == -1 ) {
+            *ReasonP = "Vector value being shared";
+            return( FALSE );
+          }
 
-	  break;
+          break;
 
-	 default:
-	  vbtype++;
-	  *ReasonP = "Body uses an array[non-scalar] value";
-	  return( FALSE );
-	}
+         default:
+          vbtype++;
+          *ReasonP = "Body uses an array[non-scalar] value";
+          return( FALSE );
+        }
 
-	if ( e->dst->type != IFAElement ) {
-	  vbadst++;
-	  *ReasonP = "Body uses a vector in a non a[i] operation";
-	  return( FALSE );
-	}
+        if ( e->dst->type != IFAElement ) {
+          vbadst++;
+          *ReasonP = "Body uses a vector in a non a[i] operation";
+          return( FALSE );
+        }
 
-	break;
+        break;
 
        default:
-	vbtype++;
-	*ReasonP = "Invalid type for vector";
-	return( FALSE );
+        vbtype++;
+        *ReasonP = "Invalid type for vector";
+        return( FALSE );
       }
 
     /* AN AElement NODE'S FIRST INPUT MUST BE A K PORT ARRAY. ITS      */
@@ -643,63 +678,63 @@ int PartIsVecCandidate( f,ReasonP )
        case IFDouble:
        case IFTrunc:
        case IFSingle:
-	break;
+        break;
 
        case IFPlus:
        case IFMinus:
-	if ( n->imp == c || n->imp->isucc == c )
-	  for ( e = n->exp; e != NULL; e = e->esucc )
-	    if ( e->dst->type != IFAElement ) {
-	      vbpmfan++;
-	      *ReasonP = "Plus/Minus operation has fanout";
-	      return( FALSE );
-	    }
-	break;
+        if ( n->imp == c || n->imp->isucc == c )
+          for ( e = n->exp; e != NULL; e = e->esucc )
+            if ( e->dst->type != IFAElement ) {
+              vbpmfan++;
+              *ReasonP = "Plus/Minus operation has fanout";
+              return( FALSE );
+            }
+        break;
 
        case IFAElement:
-	if ( n->imp->src != f->F_BODY ) {
-	  vbasrc++;
-	  *ReasonP = "Illegal source for a[i]";
-	  return( FALSE );
-	}
+        if ( n->imp->src != f->F_BODY ) {
+          vbasrc++;
+          *ReasonP = "Illegal source for a[i]";
+          return( FALSE );
+        }
   
-	/* IF TRUE, THEN AElement NODE IS INVARIANT */
-	if ( IsConst( n->imp->isucc ) ) {
-	  *ReasonP = "a[i] operation is invariant";
-	  return( FALSE );
-	}
+        /* IF TRUE, THEN AElement NODE IS INVARIANT */
+        if ( IsConst( n->imp->isucc ) ) {
+          *ReasonP = "a[i] operation is invariant";
+          return( FALSE );
+        }
   
-	for ( e = n->exp; e != NULL; e = e->esucc )
-	  switch ( e->dst->type  ) {
-	   case IFPlus:
-	   case IFMinus:
-	   case IFTimes:
-	   case IFDiv:
-	   case IFAbs:
-	   case IFNeg:
-	   case IFDouble:
-	   case IFTrunc:
-	   case IFSingle:
-	    break;
+        for ( e = n->exp; e != NULL; e = e->esucc )
+          switch ( e->dst->type  ) {
+           case IFPlus:
+           case IFMinus:
+           case IFTimes:
+           case IFDiv:
+           case IFAbs:
+           case IFNeg:
+           case IFDouble:
+           case IFTrunc:
+           case IFSingle:
+            break;
 
-	   case IFAElement:
-	    break;
+           case IFAElement:
+            break;
 
-	   case IFSGraph:
-	    break;
+           case IFSGraph:
+            break;
   
-	   default:
-	    vbaeldst++;
-	    *ReasonP = "a[i] operation can only feed +,-,*,/,abs,neg,trunc,double,single";
-	    return( FALSE );
-	  }
+           default:
+            vbaeldst++;
+            *ReasonP = "a[i] operation can only feed +,-,*,/,abs,neg,trunc,double,single";
+            return( FALSE );
+          }
 
-	break;
+        break;
 
        default:
-	vbn++;
-	*ReasonP = "Invalid body node";
-	return( FALSE );
+        vbn++;
+        *ReasonP = "Invalid body node";
+        return( FALSE );
       }
     }
   }
@@ -712,7 +747,7 @@ int PartIsVecCandidate( f,ReasonP )
 /**************************************************************************/
 /* GLOBAL **************        VectorSummary      ************************/
 /**************************************************************************/
-/* PURPOSE: Display vectorizing statistics				  */
+/* PURPOSE: Display vectorizing statistics                                */
 /**************************************************************************/
 void VectorSummary()
 {

@@ -10,6 +10,9 @@
 /**************************************************************************/
 /*
  * $Log$
+ * Revision 1.3  2001/01/02 09:16:45  patmiller
+ * Now ANSI compliant, but still a pthread problem
+ *
  * Revision 1.2  2001/01/01 05:46:22  patmiller
  * Adding prototypes and header info -- all will be broken
  *
@@ -85,28 +88,28 @@ extern int agg;
 
 /* ------------------------------------------------------------ */
 /* if2mem.c */
-extern void     PushAtNode PROTO((void));
+extern void     PushAtNode PROTO((PNODE));
 extern PNODE    PopAtNode PROTO((void));
-extern PNODE    ReferencePoint PROTO((void));
-extern PNODE    MaxNodeInDFO PROTO((void));
-extern PNODE    MaxSourceInDFO PROTO((void));
+extern PNODE    ReferencePoint PROTO((PNODE,int));
+extern PNODE    MaxNodeInDFO PROTO((PNODE,PNODE,PNODE));
+extern PNODE    MaxSourceInDFO PROTO((PNODE,PEDGE,PEDGE));
 extern void     If2Mem PROTO((void));
 
 /* if2level.c */
-extern void     AssignLevelNumbers PROTO((void));
+extern void     AssignLevelNumbers PROTO((PNODE));
 
 /* if2size.c */
-extern void     AssignSizes PROTO((void));
+extern void     AssignSizes PROTO((PNODE));
 
 /* if2alloc.c */
-extern void     AllocIf2Nodes PROTO((void));
+extern void     AllocIf2Nodes PROTO((PNODE));
 
 /* if2clean.c */
 extern void     If2Clean PROTO((void));
 
 /* if2pic.c */
-extern void     CountNodesAndEdges PROTO((void));
-extern void     TraceBuffer PROTO((void));
+extern void     CountNodesAndEdges PROTO((char*));
+extern void     TraceBuffer PROTO((PNODE,int));
 extern void     WriteIf2memPicture PROTO((void));
 extern void     WriteIf2memWarnings PROTO((void));
 
