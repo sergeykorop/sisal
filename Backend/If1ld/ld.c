@@ -40,6 +40,7 @@ int  librarycount = 0;
 
 
 int   pmodule  = FALSE;                 /* PROGRAM MODULE? */
+
 int   smodule  = FALSE;                 /* SISAL MODULE? */
 int   forF     = FALSE;                 /* PROGRAM MODULE TYPES */
 int   forC     = FALSE;
@@ -579,16 +580,26 @@ char **argv;
     } while (MadeLoad);
     StopProfiler( "Library Loads" );
 
+
     /* ------------------------------------------------------------ */
     /* Smashcase, smashtypes, and name checks                       */
     /* ------------------------------------------------------------ */
     if ( etop < 0 ) {
-      entrys[++etop] = FALSE;
-      entryt[etop] = LowerCase( MAIN_NAME, FALSE, FALSE );
+      if ( smodule ) {
+	PNAME x;
+	for(x=xnames; x; x = x->next) {
+	  if ( x->node->type == IFXGraph ) {
+	    PlaceInEntryTable(x->node->CoNsT);
+	  }
+	}
+      } else {
+	PlaceInEntryTable("main");
+      }
     }
 
     StartProfiler();
     LoadSmashTypes();
+
     CheckForUnresolvedNames();
     StopProfiler( "Smash and Check" );
 
@@ -615,6 +626,11 @@ char **argv;
 
 /*
  * $Log$
+ * Revision 1.4  2003/06/15 06:56:39  patmiller
+ * Fixes for separate compilation.  Uncovered a serious leak with
+ * separate compilation globals.  Set refcount to 1gig to mask
+ * for now.
+ *
  * Revision 1.3  2001/01/02 09:16:44  patmiller
  * Now ANSI compliant, but still a pthread problem
  *
