@@ -82,6 +82,7 @@ PNODE n2;
   i2 = n2->imp; 
     
   while ( (i1 != NULL) && (i2 != NULL) ) {
+    if ( i1->iport != i2->iport ) return FALSE;
     if ( !AreValuesEqual( i1, i2 ) )
       return( FALSE );
 
@@ -98,6 +99,15 @@ PNODE n2;
 
 /*
  * $Log$
+ * Revision 1.3  2002/11/21 04:05:05  patmiller
+ * Continued updates.  A number of 15 year old bugs have been
+ * fixed up:
+ *
+ * 1) Merging union values where the tags are different, but the value
+ *    is the same (e.g. all tags are NULL type)
+ *
+ * 2) Literals were capped at size 127 bytes! (now 10240)
+ *
  * Revision 1.2  2001/01/02 09:16:45  patmiller
  * Now ANSI compliant, but still a pthread problem
  *

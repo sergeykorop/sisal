@@ -84,6 +84,7 @@ PNODE n2;
 
   i2 = n2->imp; 
     
+
   for ( i1 = n1->imp; i1 != NULL; i1 = i1->isucc ) {
     if ( i2 == NULL )
       return( FALSE );
@@ -105,6 +106,15 @@ PNODE n2;
 
 /*
  * $Log$
+ * Revision 1.4  2002/11/21 04:05:05  patmiller
+ * Continued updates.  A number of 15 year old bugs have been
+ * fixed up:
+ *
+ * 1) Merging union values where the tags are different, but the value
+ *    is the same (e.g. all tags are NULL type)
+ *
+ * 2) Literals were capped at size 127 bytes! (now 10240)
+ *
  * Revision 1.3  2002/11/09 07:40:31  patmiller
  * Mistakenly assumed that edges into different
  * ports of a RBuild (when used as UBuild) could
