@@ -39,10 +39,17 @@ int fsyncatns = 0;
 int incratns  = 0;
 int fincratns = 0;
 
+void bogus_call_to_force_link_countitems(void) {
+}
 
 
 /*
  * $Log$
+ * Revision 1.3  2003/12/11 22:28:18  patmiller
+ * Updates to handle bogus linker error with GCC on MacOSX
+ * wherein the linker fails to load from .o that have no
+ * functions (e.g. data segment only).
+ *
  * Revision 1.2  2001/01/02 09:16:45  patmiller
  * Now ANSI compliant, but still a pthread problem
  *
