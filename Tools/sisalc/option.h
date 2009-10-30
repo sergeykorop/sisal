@@ -17,10 +17,10 @@
 /* ----------------------------------------------- */
 /* Option descriptions                             */
 /* ----------------------------------------------- */
-typedef struct option {
+typedef struct sisalc_option {
    char* name;
    char* alternate;
-   int (*matcher)(int,char*,char***,struct option*);
+   int (*matcher)(int,char*,char***,struct sisalc_option*);
    char* oneLineDoc;
    char* manDoc;
    int* param0;
