@@ -18,6 +18,11 @@
 
 #include "world.h"
 
+#define MARKED_FOR_EXPORT(f) \
+ ((f)->mark == 's' || \
+  (f)->mark == 'f' || \
+/*  (f)->mark == 'c' || */\
+  (f)->mark == 'i')
 
 int sequential = FALSE;                 /* GENERATING CODE FOR THE MASTER */
 int recursive  = FALSE;                 /* GENERATING RECURSIVE CODE      */
@@ -494,10 +499,7 @@ PNODE  ff;
   /* ------------------------------------------------------------ */
   /* Mark internal forwards as static.  Otherwise, mark extern    */
   /* ------------------------------------------------------------ */
-  if ( ff && (ff->mark == 's' || 
-              ff->mark == 'f' ||
-              ff->mark == 'c' ||
-              ff->mark == 'i') ) {
+  if ( ff && MARKED_FOR_EXPORT(ff) ){
     FPRINTF( output, "extern %-12s %s();", t, f );
   } else {
     FPRINTF( output, "static %-12s %s();", t, f );
@@ -890,7 +892,7 @@ PNODE f;
     /* ------------------------------------------------------------ */
     FPRINTF( output, "\n%svoid %s( args )\n",
             /* (f->emark)? "" : "static ", f->G_NAME ); */
-            (f->mark == 's')? "" : "static ", f->G_NAME); /* NEW CANN 2/92 */
+            MARKED_FOR_EXPORT(f)? "" : "static ", f->G_NAME);
     FPRINTF( output, "%s args;\n{\n", f->info->tname );
     break;
   }
