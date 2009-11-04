@@ -17,7 +17,7 @@
 #include "sisalrt.h"
 
 static char RCSVERSION[] = "$State$";
-static char VERSION[SIZEOF(RCSVERSION)] = "?.?";
+static char RCS_REVISION[SIZEOF(RCSVERSION)] = "?.?";
 
 /************************************************************************\
  * MAIN
@@ -38,16 +38,16 @@ int main( argc, argv )
 
   /* Form the version number from the RCS checkout revision number */
   if ( RCSVERSION[6] == ':' ) {
-    strcpy(VERSION,RCSVERSION+8);
-    for(i=0; VERSION[i]; i++) {
-      if ( VERSION[i] == '$' ) {
-        VERSION[i] = '\0';
+    strcpy(RCS_REVISION,RCSVERSION+8);
+    for(i=0; RCS_REVISION[i]; i++) {
+      if ( RCS_REVISION[i] == '$' ) {
+        RCS_REVISION[i] = '\0';
         break;
       }
     }
   }
 
-  if (!NoFibreOutput) FPRINTF( stderr, "%s %s\n", SISAL_BANNER, VERSION );
+  if (!NoFibreOutput) FPRINTF( stderr, "%s %s\n", SISAL_BANNER, RCS_REVISION );
 
   SisalMainArgs = ReadFibreInputs();
 

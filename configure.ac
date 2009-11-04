@@ -1,11 +1,13 @@
-AC_INIT(configure.in)
+AC_INIT
+AC_PREREQ([2.61])
+AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_HOST
 
 # -----------------------------------------------
 # Set version
 # -----------------------------------------------
-version="14.0.6"
+version=14.0.6
 AC_MSG_CHECKING(version number)
 AC_MSG_RESULT($version)
 AC_SUBST(version)
@@ -113,12 +115,12 @@ AC_HEADER_TIME
 # Check timer possibilities
 # -----------------------------------------------
 AC_MSG_CHECKING(Cray high resolution timer)
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
   extern double TSECND();
   int main() {double x = TSECND(); return 0;}
-],[
+]])],[
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_TSECND_INTRINSIC)
+  AC_DEFINE([HAVE_TSECND_INTRINSIC],[],[Define if the TSECND intrinsic (Cray) is present])
 ],[
   AC_MSG_RESULT(no)
 ],[
@@ -127,7 +129,7 @@ AC_TRY_RUN([
 ])
 
 AC_MSG_CHECKING(getrusage())
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -149,9 +151,9 @@ int main() {
   (void) getrusage(RUSAGE_SELF, &timerInfo);
   return 0;
 }
-],[
+]])],[
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_RUSAGE)
+  AC_DEFINE([HAVE_RUSAGE],[],[Define if we can get usage times with the getrusage() call])
 ],[
   AC_MSG_RESULT(no)
 ],[
@@ -160,7 +162,7 @@ int main() {
 ])
 
 AC_MSG_CHECKING(times())
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -182,9 +184,9 @@ int main() {
   (void) times(&timerInfo);
   return 0;
 }
-],[
+]])],[
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_TIMES)
+  AC_DEFINE([HAVE_TIMES],[],[Define if we can get usage times with the times() call])
 ],[
   AC_MSG_RESULT(no)
 ],[
@@ -196,23 +198,23 @@ dnl -----------------------------------------------
 dnl We have some keywords to check for
 dnl -----------------------------------------------
 AC_MSG_CHECKING(register keyword)
-AC_TRY_COMPILE([],[register int x;],[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[register int x;]])],[
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_REGISTER_KEYWORD)
+  AC_DEFINE([HAVE_REGISTER_KEYWORD],[],[Define if the register keyword works])
 ],[
   AC_MSG_RESULT(no)
 ])
 AC_MSG_CHECKING(volatile keyword)
-AC_TRY_COMPILE([],[volatile int x;],[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[volatile int x;]])],[
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_VOLATILE_KEYWORD)
+  AC_DEFINE([HAVE_VOLATILE_KEYWORD],[],[Define if the volatile keyword works])
 ],[
   AC_MSG_RESULT(no)
 ])
 AC_MSG_CHECKING(shared keyword)
-AC_TRY_COMPILE([static shared int x],[int y=x;],[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[static shared int x]], [[int y=x;]])],[
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_SHARED_KEYWORD)
+  AC_DEFINE([HAVE_SHARED_KEYWORD],[],[Define if the shared keyword works])
 ],[
   AC_MSG_RESULT(no)
 ])
@@ -222,14 +224,14 @@ dnl Prototypes
 dnl -----------------------------------------------
 have_prototypes=no
 AC_MSG_CHECKING(for prototypes)
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
   extern int foo(int);
-],[
+]], [[
   return foo(10);
-],[
-  AC_DEFINE(HAVE_PROTOTYPES)
+]])],[
+  AC_DEFINE([HAVE_PROTOTYPES],[],[Define if you allow normal C prototypes])
   have_prototypes=yes
-])
+],[])
 AC_MSG_RESULT($have_prototypes)
 
 dnl -----------------------------------------------
@@ -237,14 +239,14 @@ dnl const
 dnl -----------------------------------------------
 have_const=no
 AC_MSG_CHECKING(for const)
-AC_TRY_COMPILE([
-],[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+]], [[
   const int x;
   x = 0;
-],[
-  AC_DEFINE(HAVE_CONST)
+]])],[
+  AC_DEFINE([HAVE_CONST],[],[Define if C does not support const keyword])
   have_const=yes
-])
+],[])
 AC_MSG_RESULT($have_const)
 
 
@@ -256,13 +258,13 @@ AC_SUBST(sisal_clock_tick)
 
 if test "$sisal_clock_tick" = "NONE"; then
 AC_MSG_CHECKING(CLK_TCK from sysconf)
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-],[
+]], [[
    int x = sysconf(_SC_CLK_TCK)
-],[
+]])],[
   AC_MSG_RESULT(yes)
   sisal_clock_tick="sysconf(_SC_CLK_TCK)"
 ],[
@@ -272,13 +274,13 @@ fi
 
 if test "$sisal_clock_tick" = "NONE"; then
 AC_MSG_CHECKING(CLOCKS_PER_SEC in time.h)
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-],[
+]], [[
    int x = CLOCKS_PER_SEC;
-],[
+]])],[
   AC_MSG_RESULT(yes)
   sisal_clock_tick=CLOCKS_PER_SEC
 ],[
@@ -288,13 +290,13 @@ fi
 
 if test "$sisal_clock_tick" = "NONE"; then
 AC_MSG_CHECKING(CLK_TCK in time.h)
-AC_TRY_COMPILE([
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-],[
+]], [[
    int x = CLK_TCK;
-],[
+]])],[
   AC_MSG_RESULT(yes)
   sisal_clock_tick=CLK_TCK
 ],[
@@ -314,7 +316,7 @@ fi
 # -----------------------------------------------
 bad_forward=no
 AC_MSG_CHECKING(for bad static forward)
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
 struct s { int a; int b; };
 static struct s foo;
 int foobar() {
@@ -326,10 +328,11 @@ static struct s foo = { 1, 2 };
 main() {
  exit(!((int)&foo == foobar()));
 }
-],[
+]])],[
   bad_forward=no
 ],[
-  AC_DEFINE(BAD_STATIC_FORWARD) bad_forward=yes,
+  AC_DEFINE([BAD_STATIC_FORWARD],[],[Define if your compiler botches static forward declarations (as it does on SCI ODT 3.0)]) 
+  bad_forward=yes,
 ],[
   bad_forward=no
 ])
@@ -446,7 +449,7 @@ dnl Non coherent cache issues!
 dnl -----------------------------------------------
 AC_MSG_CHECKING(non-coherent cache)
 if test "$model" = "IBMPower4"; then
-  AC_DEFINE(NON_COHERENT_CACHE)
+  AC_DEFINE([NON_COHERENT_CACHE],[],[Define if model has non-coherent cache (Dead IBM Power 4)])
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
@@ -457,7 +460,7 @@ dnl Mutable descriptors in FLI
 dnl -----------------------------------------------
 AC_MSG_CHECKING(support for mutable descriptors)
 if test "black" = "white"; then
-  AC_DEFINE(MUTABLE_DESCRIPTORS)
+  AC_DEFINE([MUTABLE_DESCRIPTORS],[],[Define if your FLI supports mutable descriptors])
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
@@ -479,7 +482,7 @@ AC_ARG_ENABLE(dist-dsa, --enable-dist-dsa   Turn on the distributed memory alloc
   
 AC_MSG_CHECKING(distributed dsa)
 if test "$DIST_DSA" = "yes"; then
-  AC_DEFINE(DIST_DSA)
+  AC_DEFINE([DIST_DSA],[],[Define if you choose a distributed DSA model (broken)])
 fi
 AC_MSG_RESULT($DIST_DSA)
 
@@ -494,7 +497,7 @@ AC_ARG_ENABLE(bad-static-sharing, --enable-bad-static-sharing  Problem with some
 
 AC_MSG_CHECKING(static sharing problem?)
 if test "$bad_static_sharing" = "yes"; then
-  AC_DEFINE(NO_STATIC_SHARED)
+  AC_DEFINE([NO_STATIC_SHARED],[],[Define if your C compiler cannot do static sharing])
 fi
 AC_MSG_RESULT($bad_static_sharing)
 
@@ -508,8 +511,8 @@ AC_ARG_ENABLE(instrumentation, --enable-instrumentation  Build instrumentation i
 ])
 AC_MSG_CHECKING(Build instrumented version?)
 if test "$instrument_runtime" = "yes"; then
-  AC_DEFINE(VERBOSE)
-  AC_DEFINE(DEBUG_DSA)
+  AC_DEFINE([VERBOSE],[],[Define if you want verbose information from the runtime])
+  AC_DEFINE([DEBUG_DSA],[],[Define if you want debug info for the DSA])
 fi
 AC_MSG_RESULT($instrument_runtime)
 
@@ -519,7 +522,7 @@ dnl -----------------------------------------------
 top_level_directory=`pwd`
 AC_SUBST(top_level_directory)
 
-AC_OUTPUT(makefile
+AC_CONFIG_FILES([makefile
 	Include/sisalPaths.h
 	Include/sisalInfo.h
 	Include/makefile.inc
@@ -534,5 +537,6 @@ AC_OUTPUT(makefile
 	Runtime/Sharedlib/sisalrt.h
 	Runtime/Sharedlib/makefile
 	Tools/sisalc/makefile
-)
+])
+AC_OUTPUT
 
