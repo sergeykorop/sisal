@@ -366,7 +366,7 @@ dnl -----------------------------------------------
 dnl Make sure we have support the choosen model
 dnl -----------------------------------------------
 AC_MSG_CHECKING(if $model is supported)
-if test -d Runtime/"$model"Model; then
+if test -d "${srcdir}/Runtime/${model}Model"; then
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
@@ -384,17 +384,17 @@ AC_SUBST(parallel_compile)
 AC_SUBST(parallel_link)
 AC_SUBST(max_procs)
 
-if test -x Runtime/"$model"Model/detect; then
+if test -x "${srcdir}/Runtime/${model}Model/detect"; then
   AC_MSG_CHECKING(compile flags)
-  parallel_compile=`Runtime/"$model"Model/detect compile $CC $CFLAGS`
+  parallel_compile=`"${srcdir}/Runtime/${model}Model/detect" compile $CC $CFLAGS`
   AC_MSG_RESULT($parallel_compile)
 
   AC_MSG_CHECKING(link flags)
-  parallel_link=`Runtime/"$model"Model/detect link $CC $CFLAGS $parallel_compile $LIBS`
+  parallel_link=`"${srcdir}/Runtime/${model}Model/detect" link $CC $CFLAGS $parallel_compile $LIBS`
   AC_MSG_RESULT($parallel_link)
 
   AC_MSG_CHECKING(processor count)
-  max_procs=`Runtime/"$model"Model/detect processors $CC $CFLAGS $parallel_compile $LIBS $parallel_link`
+  max_procs=`"${srcdir}/Runtime/${model}Model/detect" processors $CC $CFLAGS $parallel_compile $LIBS $parallel_link`
   if test "$max_procs" = "ERROR"; then max_procs=1; fi
   AC_MSG_RESULT($max_procs)
 
@@ -516,12 +516,6 @@ if test "$instrument_runtime" = "yes"; then
 fi
 AC_MSG_RESULT($instrument_runtime)
 
-dnl -----------------------------------------------
-dnl Directory info
-dnl -----------------------------------------------
-top_level_directory=`pwd`
-AC_SUBST(top_level_directory)
-
 AC_CONFIG_FILES([makefile
 	Include/sisalPaths.h
 	Include/sisalInfo.h
@@ -537,6 +531,7 @@ AC_CONFIG_FILES([makefile
 	Runtime/Sharedlib/sisalrt.h
 	Runtime/Sharedlib/makefile
 	Tools/sisalc/makefile
+	Tests/makefile
 ])
 AC_OUTPUT
 

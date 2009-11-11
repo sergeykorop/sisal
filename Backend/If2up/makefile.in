@@ -7,11 +7,16 @@
 #*  *#
 #**************************************************************************#
 
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 versionedExecutables=if2up if2pprint
 
 sources = up.c if2ade.c if2call.c if2class.c if2const.c if2count.c if2marks.c if2migrate.c if2noop.c if2owner.c if2refcnt.c if2refcntopt.c if2replace.c if2rwset.c if2up.c ifxstuff.c
 
-include @top_level_directory@/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 
 if2up: $(objects)
 	$(LD-C) -o $@ $(objects) -L../Library -lifx -lm

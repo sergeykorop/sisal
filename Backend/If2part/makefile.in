@@ -7,12 +7,17 @@
 #*  *#
 #**************************************************************************#
 
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 versionedExecutables=if2part
 
 sources = part.c if2cost.c if2count.c if2modules.c if2part.c ifxstuff.c report.c slice.c stream.c vector.c
-data=s.costs
+data=$(srcdir)/s.costs
 
-include @top_level_directory@/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 
 if2part: $(objects)
 	$(LD-C) -o $@ $(objects) -L../Library -lifx -lm

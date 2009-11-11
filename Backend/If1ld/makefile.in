@@ -7,11 +7,16 @@
 #*  *#
 #**************************************************************************#
 
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 versionedExecutables=if1ld
 
 sources = if1names.c if1smash.c ifxstuff.c ld.c
 
-include @top_level_directory@/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 
 if1ld: $(objects)
 	$(LD-C) -o $@ $(objects) -L../Library -lifx -lm

@@ -7,11 +7,16 @@
 #*  *#
 #**************************************************************************#
 
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 versionedExecutables=if1opt if1pprint if1count if1check
 
 sources = opt.c AssignIDs.c callreorder.c cascade.c if1cse.c if1dead.c if1dope.c if1explode.c if1fission.c if1fold.c if1fusion.c if1gcse.c if1inline.c if1invar.c if1invert.c if1move.c if1normal.c if1parallel.c if1reduce.c if1split.c if1unroll.c ifxstuff.c util.c
 
-include @top_level_directory@/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 
 if1opt: $(objects)
 	$(LD-C) -o $@ $(objects) -L../Library -lifx -lm

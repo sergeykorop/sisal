@@ -688,7 +688,6 @@ parallel_compile
 parallel_link
 max_procs
 max_path_length
-top_level_directory
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -7401,7 +7400,7 @@ echo "${ECHO_T}$model" >&6; }
 
 { echo "$as_me:$LINENO: checking if $model is supported" >&5
 echo $ECHO_N "checking if $model is supported... $ECHO_C" >&6; }
-if test -d Runtime/"$model"Model; then
+if test -d "${srcdir}/Runtime/${model}Model"; then
   { echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6; }
 else
@@ -7420,22 +7419,22 @@ max_procs=1
 
 
 
-if test -x Runtime/"$model"Model/detect; then
+if test -x "${srcdir}/Runtime/${model}Model/detect"; then
   { echo "$as_me:$LINENO: checking compile flags" >&5
 echo $ECHO_N "checking compile flags... $ECHO_C" >&6; }
-  parallel_compile=`Runtime/"$model"Model/detect compile $CC $CFLAGS`
+  parallel_compile=`"${srcdir}/Runtime/${model}Model/detect" compile $CC $CFLAGS`
   { echo "$as_me:$LINENO: result: $parallel_compile" >&5
 echo "${ECHO_T}$parallel_compile" >&6; }
 
   { echo "$as_me:$LINENO: checking link flags" >&5
 echo $ECHO_N "checking link flags... $ECHO_C" >&6; }
-  parallel_link=`Runtime/"$model"Model/detect link $CC $CFLAGS $parallel_compile $LIBS`
+  parallel_link=`"${srcdir}/Runtime/${model}Model/detect" link $CC $CFLAGS $parallel_compile $LIBS`
   { echo "$as_me:$LINENO: result: $parallel_link" >&5
 echo "${ECHO_T}$parallel_link" >&6; }
 
   { echo "$as_me:$LINENO: checking processor count" >&5
 echo $ECHO_N "checking processor count... $ECHO_C" >&6; }
-  max_procs=`Runtime/"$model"Model/detect processors $CC $CFLAGS $parallel_compile $LIBS $parallel_link`
+  max_procs=`"${srcdir}/Runtime/${model}Model/detect" processors $CC $CFLAGS $parallel_compile $LIBS $parallel_link`
   if test "$max_procs" = "ERROR"; then max_procs=1; fi
   { echo "$as_me:$LINENO: result: $max_procs" >&5
 echo "${ECHO_T}$max_procs" >&6; }
@@ -7915,10 +7914,7 @@ fi
 { echo "$as_me:$LINENO: result: $instrument_runtime" >&5
 echo "${ECHO_T}$instrument_runtime" >&6; }
 
-top_level_directory=`pwd`
-
-
-ac_config_files="$ac_config_files makefile Include/sisalPaths.h Include/sisalInfo.h Include/makefile.inc Frontend/Front1/makefile Backend/Library/makefile Backend/If1ld/makefile Backend/If1opt/makefile Backend/If2gen/makefile Backend/If2mem/makefile Backend/If2part/makefile Backend/If2up/makefile Runtime/Sharedlib/sisalrt.h Runtime/Sharedlib/makefile Tools/sisalc/makefile"
+ac_config_files="$ac_config_files makefile Include/sisalPaths.h Include/sisalInfo.h Include/makefile.inc Frontend/Front1/makefile Backend/Library/makefile Backend/If1ld/makefile Backend/If1opt/makefile Backend/If2gen/makefile Backend/If2mem/makefile Backend/If2part/makefile Backend/If2up/makefile Runtime/Sharedlib/sisalrt.h Runtime/Sharedlib/makefile Tools/sisalc/makefile Tests/makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -8489,6 +8485,7 @@ do
     "Runtime/Sharedlib/sisalrt.h") CONFIG_FILES="$CONFIG_FILES Runtime/Sharedlib/sisalrt.h" ;;
     "Runtime/Sharedlib/makefile") CONFIG_FILES="$CONFIG_FILES Runtime/Sharedlib/makefile" ;;
     "Tools/sisalc/makefile") CONFIG_FILES="$CONFIG_FILES Tools/sisalc/makefile" ;;
+    "Tests/makefile") CONFIG_FILES="$CONFIG_FILES Tests/makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -8625,12 +8622,11 @@ parallel_compile!$parallel_compile$ac_delim
 parallel_link!$parallel_link$ac_delim
 max_procs!$max_procs$ac_delim
 max_path_length!$max_path_length$ac_delim
-top_level_directory!$top_level_directory$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 77; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

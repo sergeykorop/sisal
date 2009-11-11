@@ -7,6 +7,11 @@
 #*  *#
 #**************************************************************************#
 
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 sources = ifront.cc parser.cc lexer.cc semanticBase.cc \
 	SisalParser.cc \
 	IFObject.cc \
@@ -20,7 +25,7 @@ localFiles = .depends
 
 versionedExecutables = ifront
 
-include @top_level_directory@/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 CXXFLAGS+= -g
 
 ifeq ("${wildcard .depends}","")

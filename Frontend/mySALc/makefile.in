@@ -8,11 +8,16 @@
 #*  *#
 #**************************************************************************#
 
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 sources = foo.cc
 
 localFiles = .depends mysalmodule.so
 
-include /home/pjmiller/sourceforge/sisal14.0.0/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 
 CFLAGS+= -g -I/usr/local/include/python2.1
 

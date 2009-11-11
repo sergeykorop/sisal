@@ -17,9 +17,6 @@ version=@version@
 majorVersion:=${basename ${basename ${version}}}
 
 # Directories
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 
@@ -94,8 +91,8 @@ objects = ${sources:.c=.o}
 # COMPILE and LINK
 #-----------------------------------------------
 CC=@CC@
-CFLAGS=${filter-out -O2,@CFLAGS@} -I@top_level_directory@/Include
-RUNTIMEFLAGS=-I@top_level_directory@/Runtime/@model@Model @parallel_compile@ @CFLAGS@ -I@top_level_directory@/Include
+CFLAGS=${filter-out -O2,@CFLAGS@} -I$(top_builddir)/Include -I$(srcdir)
+RUNTIMEFLAGS=-I$(top_srcdir)/Runtime/@model@Model @parallel_compile@ @CFLAGS@ -I$(top_builddir)/Include -I$(srcdir) -I@builddir@
 CXX=@CXX@
 CXXFLAGS=@CXXFLAGS@
 F77=@F77@

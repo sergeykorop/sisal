@@ -4,13 +4,19 @@
 # Author: Pat Miller
 # See LICENSE.TXT
 #--------------------------------------------------
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = @top_builddir@
+VPATH = @srcdir@
+
 target=all
 packages=front1 sisalc backend_library if1opt if1ld if2mem if2up if2part if2gen runtime
 local: ${packages}
 
 VERSION=@version@
 
-include @top_level_directory@/Include/makefile.inc
+include $(top_builddir)/Include/makefile.inc
 
 .PHONY: front1
 front1:
