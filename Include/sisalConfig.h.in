@@ -19,6 +19,9 @@
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
 
+/* Define if GCC-style noreturn attribute is supported */
+#undef HAVE_GCC_ATTR_NORETURN
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 

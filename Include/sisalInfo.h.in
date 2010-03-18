@@ -89,6 +89,13 @@
 #define PROTO(x) ()
 #endif
 
+#undef PROTO_NORET
+#ifdef HAVE_GCC_ATTR_NORETURN
+#define PROTO_NORET(x) PROTO(x) __attribute__ ((noreturn))
+#else
+#define PROTO_NORET(x) PROTO(x)
+#endif
+
 #ifndef HAVE_CONST
 #define const
 #endif

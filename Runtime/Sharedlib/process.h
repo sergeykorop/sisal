@@ -352,7 +352,7 @@ extern LOCK_TYPE *Dsa_lock;
 /* ------------------------------------------------------------ */
 
 extern void    InitErrorSystem PROTO((void));
-extern int     SisalError PROTO((char*,char*));
+extern int     SisalError PROTO_NORET((char*,char*));
 
 extern void    DsaInit PROTO((void));
 extern POINTER Alloc PROTO((int));

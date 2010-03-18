@@ -235,6 +235,21 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 AC_MSG_RESULT($have_prototypes)
 
 dnl -----------------------------------------------
+dnl GCC-style 'noreturn' attribute
+dnl -----------------------------------------------
+have_attr_no_return=no
+AC_MSG_CHECKING(for GCC-style noreturn attribute)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+  extern void fatal() __attribute__ ((noreturn));
+]], [[
+  fatal();
+]])],[
+  AC_DEFINE([HAVE_GCC_ATTR_NORETURN],[],[Define if GCC-style noreturn attribute is supported])
+  have_attr_no_return=yes
+],[])
+AC_MSG_RESULT($have_attr_no_return)
+
+dnl -----------------------------------------------
 dnl const
 dnl -----------------------------------------------
 have_const=no
