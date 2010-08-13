@@ -434,10 +434,11 @@ int main(int argc, char** argv) {
    if ( index(majorVersion,'.') ) {
       *index(majorVersion,'.') = 0;
    }
-   sprintf(binDirectory,"%s/bin/sisal%s",SISAL_PATH_PREFIX,majorVersion);
-   sprintf(dataDirectory,"%s/share/sisal%s",SISAL_PATH_PREFIX,majorVersion);
-   sprintf(libDirectory,"%s/lib/sisal%s",SISAL_PATH_PREFIX,majorVersion);
-   sprintf(includeDirectory,"%s/include/sisal%s",SISAL_PATH_PREFIX,majorVersion);
+
+   strcpy(binDirectory, SISAL_PATH_LIBEXECDIR);
+   strcpy(dataDirectory, SISAL_PATH_DATADIR);
+   strcpy(libDirectory, SISAL_PATH_LIBDIR);
+   strcpy(includeDirectory, SISAL_PATH_INCLUDEDIR);
 
    /* ----------------------------------------------- */
    /* See if we only want some information            */

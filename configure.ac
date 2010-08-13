@@ -1,8 +1,10 @@
-AC_INIT
-AC_PREREQ([2.61])
+AC_INIT([sisal], [14.0.6], [])
+AC_PREREQ([2.62])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 
 # -----------------------------------------------
 # Set version
@@ -49,8 +51,8 @@ fi
 CCARGUMENTS=`extraArguments $CC`
 AC_PATH_PROG(CC,$CC,$CC)
 CC="$CC $CCARGUMENTS"
-AC_AIX
-AC_MINIX
+
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl -----------------------------------------------
 dnl FORTRAN can be turned off
@@ -531,22 +533,39 @@ if test "$instrument_runtime" = "yes"; then
 fi
 AC_MSG_RESULT($instrument_runtime)
 
-AC_CONFIG_FILES([makefile
+AM_CPPFLAGS="${AM_CPPFLAGS} -DSISAL_PATH_PREFIX='\"\$(prefix)\"'"
+AM_CPPFLAGS="${AM_CPPFLAGS} -DSISAL_PATH_LIBEXECDIR='\"\$(pkglibexecdir)\"'"
+AM_CPPFLAGS="${AM_CPPFLAGS} -DSISAL_PATH_DATADIR='\"\$(pkgdatadir)\"'"
+AM_CPPFLAGS="${AM_CPPFLAGS} -DSISAL_PATH_INCLUDEDIR='\"\$(pkgincludedir)\"'"
+AM_CPPFLAGS="${AM_CPPFLAGS} -DSISAL_PATH_LIBDIR='\"\$(pkglibdir)\"'"
+
+AC_SUBST(AM_CPPFLAGS)
+
+AC_CONFIG_FILES([Makefile
 	Include/sisalPaths.h
 	Include/sisalInfo.h
-	Include/makefile.inc
-	Frontend/Front1/makefile
-	Backend/Library/makefile
-	Backend/If1ld/makefile
-	Backend/If1opt/makefile
-	Backend/If2gen/makefile
-	Backend/If2mem/makefile
-	Backend/If2part/makefile
-	Backend/If2up/makefile
+	Frontend/Front1/Makefile
+	Backend/Library/Makefile
+	Backend/If1ld/Makefile
+	Backend/If1opt/Makefile
+	Backend/If2gen/Makefile
+	Backend/If2mem/Makefile
+	Backend/If2part/Makefile
+	Backend/If2up/Makefile
+	Runtime/Makefile
+	Runtime/AlliantModel/Makefile
+	Runtime/CrayModel/Makefile
+	Runtime/EncoreModel/Makefile
+	Runtime/IBMPower4Model/Makefile
+	Runtime/PThreadsModel/Makefile
+	Runtime/SequentModel/Makefile
+	Runtime/SerialModel/Makefile
+	Runtime/SGIModel/Makefile
 	Runtime/Sharedlib/sisalrt.h
-	Runtime/Sharedlib/makefile
-	Tools/sisalc/makefile
-	Tests/makefile
+	Runtime/Sharedlib/Makefile
+	Runtime/SolarisModel/Makefile
+	Tools/sisalc/Makefile
+	Tests/Makefile
 ])
 AC_OUTPUT
 

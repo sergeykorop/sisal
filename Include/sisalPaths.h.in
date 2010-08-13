@@ -8,7 +8,13 @@
 /**************************************************************************/
 
 #define SISAL_VERSION "@version@"
-#define SISAL_PATH_PREFIX "@prefix@"
+
+/**************************************************************************/
+/* We can't define constants similar to SISAL_PATH_PREFIX here according  */
+/* to the GNU Coding Standards (see Autoconf manual, '4.8.2 Installation  */
+/* Directory Variables' for details).                                     */ 
+/**************************************************************************/
+
 #define SISAL_CC "@CC@"
 #define SISAL_LDFLAGS "@LIBS@ @LDFLAGS@ @parallel_link@"
 #define SISAL_CFLAGS "@CFLAGS@ @parallel_compile@"
