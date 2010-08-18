@@ -3203,9 +3203,9 @@ int n;
 
 static void clearstring(s, first, last)
 stryng *s;
-char first, last;
+int first, last;
 {
-  char i;
+  int i;
 
   for (i = first - 1; i < last; i++)
     s->str[(int)i] = ' ';
@@ -3218,7 +3218,7 @@ char first, last;
 static void insertchar(s, c, p)
 stryng *s;
 Char c;
-char p;
+int p;
 {
   int i;
 
@@ -3291,7 +3291,7 @@ Char *s20;
 
 static void insertstring(s, t, p)
 stryng *s, *t;
-char p;
+int p;
 {
   int i, j, FORLIM;
 
@@ -3352,7 +3352,7 @@ stryng *s;
 
 static void substring(t, s, first, last)
 stryng *t, *s;
-char first;
+int first;
 int last;
 {
   int i, FORLIM;
@@ -3372,7 +3372,7 @@ int last;
 
 static void deletestring(s, first, last)
 stryng *s;
-char first;
+int first;
 int last;
 {
   int i, offset, FORLIM;
@@ -3438,7 +3438,7 @@ stryng *s;
 
 static boolean matchstrings(s1, s2, pos)
 stryng *s1, *s2;
-char pos;
+int pos;
 {
   int i, ix;
   boolean res;
@@ -3475,7 +3475,7 @@ stryng *s1, *s2;
 static int findchar(c, s, pos)
 Char c;
 stryng *s;
-char pos;
+int pos;
 {
   int Result, i;
 
@@ -3490,7 +3490,7 @@ char pos;
 
 static int findstring(s, t, pos)
 stryng *s, *t;
-char pos;
+int pos;
 {
   int chpos;
   boolean match;
