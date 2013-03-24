@@ -2010,7 +2010,7 @@ staticforward void printline PROTO(( inputbuffer* ));
 staticforward void modify PROTO(( inputbuffer* ));
 staticforward void flushlines PROTO(( void ));
 staticforward void readline PROTO(( inputbuffer* ));
-staticforward void getline PROTO(( inputbuffer** ));
+staticforward void sisal_getline PROTO(( inputbuffer** ));
 staticforward void readchar PROTO(( Char*,inputbuffer** ));
 staticforward void unreadchar PROTO(( Char,inputbuffer* ));
 staticforward void insertcharbuf PROTO(( Char,unchar,inputbuffer* ));
@@ -24372,7 +24372,7 @@ inputbuffer *buffer;
 }  /* readline */
 
 
-static void getline(buffer)
+static void sisal_getline(buffer)
 inputbuffer **buffer;
 {
   /*(var buffer: InBufPtr); forward*/
@@ -24404,7 +24404,7 @@ inputbuffer **buffer;
   readline(*buffer);
 
   /* else */
-}  /* getline */
+}  /* sisal_getline */
 
 
 static void readchar(ch, buffer)
@@ -24421,7 +24421,7 @@ inputbuffer **buffer;
     if ((*buffer)->lastline)
       endfile = true;
     else
-      getline(buffer);
+      sisal_getline(buffer);
   }
   WITH = *buffer;   /* with */
   *ch = WITH->buf[WITH->pointer];
@@ -24504,7 +24504,7 @@ int pighowmany;
   tokenstart = oldline->pointer;
   peeking = false;
   while (oldline != savbuf)   /* print the skipped lines */
-    getline(&savbuf);
+    sisal_getline(&savbuf);
   linebuf = oldline;   /* next char will be first AFTER deletions */
   linebuf->pointer = tokenstart;
   if (debug)
