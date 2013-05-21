@@ -13,7 +13,7 @@ all: local install
 SHELL = @SHELL@
 
 # Full version 
-version=@version@
+version=@PACKAGE_VERSION@
 majorVersion:=${basename ${basename ${version}}}
 
 # Directories

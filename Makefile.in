@@ -173,6 +173,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
@@ -238,7 +239,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-version = @version@
 SUBDIRS = Frontend/Front1 Tools/sisalc Backend/Library Backend/If1opt Backend/If1ld Backend/If2mem Backend/If2up Backend/If2part Backend/If2gen Runtime Tests
 dist_doc_DATA = COPYRIGHT.1993 LICENSE.LLNL
 all: all-recursive

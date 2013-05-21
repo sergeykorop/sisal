@@ -7,14 +7,6 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign])
 
 # -----------------------------------------------
-# Set version
-# -----------------------------------------------
-version=14.0.6
-AC_MSG_CHECKING(version number)
-AC_MSG_RESULT($version)
-AC_SUBST(version)
-
-# -----------------------------------------------
 # Better to put . into path for some of the tests
 # -----------------------------------------------
 export PATH=".:$PATH"
