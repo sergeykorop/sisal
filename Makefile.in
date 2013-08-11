@@ -40,7 +40,7 @@ DIST_COMMON = $(am__configure_deps) $(dist_doc_DATA) \
 	$(top_srcdir)/Include/sisalConfig.h.in \
 	$(top_srcdir)/Include/sisalInfo.h.in \
 	$(top_srcdir)/Include/sisalPaths.h.in $(top_srcdir)/configure \
-	config/config.guess config/config.sub config/depcomp \
+	NEWS config/config.guess config/config.sub config/depcomp \
 	config/install-sh config/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac

@@ -1,4 +1,4 @@
-AC_INIT([sisal], [14.0.6], [])
+AC_INIT([sisal], [14.1.0], [])
 AC_PREREQ([2.62])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_AUX_DIR(config)
