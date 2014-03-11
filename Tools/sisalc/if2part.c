@@ -31,6 +31,8 @@ void if2part(char* file,
              ) {
    char partitioner[MAXPATHLEN];
    char costs[MAXPATHLEN];
+   char mincost[32];
+   char iters[32];
    charStarQueue* argv = 0;
 
    sprintf(partitioner,"%s/if2part",bindir);
@@ -46,6 +48,12 @@ void if2part(char* file,
 
    if ( suppressWarnings ) enqueue(&argv,"-w");
    if ( profiling ) enqueue(&argv,"-W");
+
+   snprintf(mincost, sizeof(mincost), "-H%d", minimumParallelLoopCost);
+   enqueue(&argv, mincost);
+
+   snprintf(iters, sizeof(iters), "-@%d", assumedIterationCount);
+   enqueue(&argv, iters);
 
    if ( Submit(&argv) != 0 ) {
       compilerError("if2 partitioner failure");
