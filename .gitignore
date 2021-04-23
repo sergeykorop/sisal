@@ -1,4 +1,2 @@
-syntax: glob
-
 # ignore build directories with the most commonly used names:
-[Bb]uild
+[Bb]uild/
