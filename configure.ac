@@ -106,6 +106,12 @@ AC_CHECK_HEADERS(sys/wait.h)
 AC_HEADER_TIME
 
 # -----------------------------------------------
+# Library checks...
+# -----------------------------------------------
+
+AC_CHECK_LIB([m], [sqrt])
+
+# -----------------------------------------------
 # Check timer possibilities
 # -----------------------------------------------
 AC_MSG_CHECKING(Cray high resolution timer)
