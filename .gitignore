@@ -1,2 +1,5 @@
 # ignore build directories with the most commonly used names:
 [Bb]uild/
+
+# autotools
+autom4te.cache/
