@@ -14,6 +14,10 @@
 extern void foo PROTO((int*));
 extern int NumWorkers;
 
+extern void InitSisalRunTime(void);
+extern void StartWorkers(void);
+extern void StopWorkers(void);
+
 int main(int argc, char** argv) {
    int x;
    if ( argc > 1 && argv[1][0] == '-' && argv[1][1] == 'w' ) {
