@@ -119,6 +119,8 @@ char **argv;
    
     ParseCommandLine( argc, argv );
 
+    extern void bogus_call_to_force_link_countitems(void);
+
     bogus_call_to_force_link_countitems();
 
     If1Read();

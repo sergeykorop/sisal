@@ -604,6 +604,9 @@ char **argv;
   output = stdout;
 
 /*  int i5 = I_Info5; */
+
+  extern void bogus_call_to_force_link_smashitems(void);
+
   bogus_call_to_force_link_smashitems();
 
   ParseCommandLine( argc, argv );
