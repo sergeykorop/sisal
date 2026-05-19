@@ -332,16 +332,21 @@ fi
 bad_forward=no
 AC_MSG_CHECKING(for bad static forward)
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#else
+extern void exit(int);
+#endif
 struct s { int a; int b; };
 static struct s foo;
-int foobar() {
- static int random;
- random = (int) &foo;
+void *foobar() {
+ static void *random;
+ random = &foo;
  return random;
 }
 static struct s foo = { 1, 2 };
-main() {
- exit(!((int)&foo == foobar()));
+int main(void) {
+ exit(!(&foo == foobar()));
 }
 ]])],[
   bad_forward=no
