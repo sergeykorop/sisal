@@ -220,6 +220,7 @@ int   indent;
 
 static void If2PPrintNode( g, indent )
 PNODE g;
+int indent;
 {
     register PNODE n;
 

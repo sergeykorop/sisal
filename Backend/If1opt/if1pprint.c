@@ -232,6 +232,7 @@ PNODE n;
 
 static void If1PPrintNode( g, indent )
 PNODE g;
+int indent;
 {
     register PNODE n;
 
