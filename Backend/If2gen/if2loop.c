@@ -568,11 +568,11 @@ PEDGE  i;
 /*          NODE IS ASSUMED TO BE i->src.                                 */
 /**************************************************************************/
 
-static void PrintRCatUpd( indent, i, v, bool, atnode )
+static void PrintRCatUpd( indent, i, v, bool_, atnode )
 int    indent;
 PEDGE  i;
 PEDGE  v;
-PEDGE  bool;
+PEDGE  bool_;
 int    atnode;
 {
   register char  *macro;
@@ -581,7 +581,7 @@ int    atnode;
 
   PrintIndentation( indent );
 
-  FPRINTF( output, "%s%s%s( %s, ", (bool != NULL)? "B" : "", macro, 
+  FPRINTF( output, "%s%s%s( %s, ", (bool_ != NULL)? "B" : "", macro, 
            IsBasic( i->info->A_ELEM )? "" : "X", i->info->A_ELEM->tname  );
 
   PrintTemp( i );
@@ -589,9 +589,9 @@ int    atnode;
   FPRINTF( output, ", " );
   PrintTemp( v );
 
-  if ( bool != NULL ) {
+  if ( bool_ != NULL ) {
     FPRINTF( output, ", " );
-    PrintTemp( bool );
+    PrintTemp( bool_ );
     }
 
   if ( !atnode ) {
