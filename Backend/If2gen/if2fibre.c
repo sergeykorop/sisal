@@ -18,8 +18,8 @@
 
 #include "world.h"
 
-static void PrintReadOp();
-static void PrintWriteOp();
+static void PrintReadOp  PROTO((int, char *, PINFO));
+static void PrintWriteOp PROTO((int, char *, PINFO));
 
 /**************************************************************************/
 /* LOCAL  **************      PrintReadRoutine     ************************/

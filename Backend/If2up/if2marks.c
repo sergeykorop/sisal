@@ -18,7 +18,7 @@
 
 #include "world.h"
 
-static void PropagateMarks();
+static void PropagateMarks PROTO((PNODE));
 
 static int lnstable  = 0;   /* COUNT OF RETRIES DURING LOOP PROCESSING    */
 static int fnstable  = 0;   /* COUNT OF FUNCTION RETRIES BECAUSE UNSTABLE */

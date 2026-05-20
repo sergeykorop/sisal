@@ -18,7 +18,7 @@
 
 #include "world.h"
 
-static void  ClassifyGraphEdges();
+static void  ClassifyGraphEdges PROTO((PNODE));
 
 /**************************************************************************/
 /* LOCAL  **************         IsWritten         ************************/

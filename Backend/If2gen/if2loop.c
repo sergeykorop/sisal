@@ -18,7 +18,7 @@
 
 #include "world.h"
 
-static void PrintVecNode();
+static void PrintVecNode PROTO((int, PNODE));
 
 /* scc UNDER Unicos APPEARS TO HAVE TROUBLE CORRECTLY VECTORIZING LOOPS */
 /* NOT ALREADY SUBJECTED TO cse AND gcse OPTIMIZATIONS                  */

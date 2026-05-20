@@ -18,7 +18,7 @@
 
 #include "world.h"
 
-static void PrintFreeOp();
+static void PrintFreeOp PROTO((int, PINFO, int, char*));
 
 /**************************************************************************/
 /* LOCAL  **************      IsReadOnlyOuter      ************************/
