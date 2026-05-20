@@ -87,7 +87,7 @@ void BuildStridedSlices(Head,Count,ChildCode,ArgPointer,Low,High,
                         MinSlice,LoopSliceCount)
 struct ActRec   **Head;
 int             *Count;
-void            (*ChildCode)();
+PCODE           ChildCode;
 POINTER         ArgPointer;
 register int    Low;
 int             High;
@@ -136,7 +136,7 @@ void BuildBlockSlices(Head, Count, ChildCode, ArgPointer, Low, High, MinSlice,
                       LoopSliceCount)
 struct ActRec **Head;
 int            *Count;
-void            (*ChildCode)();
+PCODE           ChildCode;
 POINTER         ArgPointer;
 register int    Low;
 register int    High;
@@ -186,7 +186,7 @@ void BuildCachedSlices(Head, Count, ChildCode, ArgPointer, Low, High, MinSlice,
                       LoopSliceCount,Size,Norm)
 struct ActRec **Head;
 int            *Count;
-void            (*ChildCode)();
+PCODE           ChildCode;
 POINTER         ArgPointer;
 register int    Low;
 register int    High;
@@ -332,7 +332,7 @@ void BuildTriangleSlices(Head, Count, ChildCode, ArgPointer, Low, TrueHigh,
                       MinSlice, LoopSliceCount)
 struct ActRec **Head;
 int            *Count;
-void            (*ChildCode)();
+PCODE           ChildCode;
 POINTER         ArgPointer;
 register int    Low;
 register int    TrueHigh;
@@ -388,7 +388,7 @@ void BuildGssSlices( Head, Count, ChildCode, ArgPointer, Low, High,
                     MinSlice, LoopSliceCount )
 struct ActRec **Head;
 int           *Count;
-void          (*ChildCode)();
+PCODE         ChildCode;
 POINTER       ArgPointer;
 int           Low;
 int           High;
@@ -439,7 +439,7 @@ void BuildSlices( LoopType, Head, Count, ChildCode, ArgPointer, Low, High,
 int             LoopType;
 struct ActRec **Head;
 int            *Count;
-void            (*ChildCode)();
+PCODE           ChildCode;
 POINTER         ArgPointer;
 int             Low;
 int             High;
@@ -570,7 +570,7 @@ int     Count;
 /* Specialized Spawns */
 /* ------------------------------------------------------------ */
 void SpawnStridedSlices( ChildCode, ArgPointer, Low, High, MinSlice, LoopSliceCount )
-void    (*ChildCode)();
+PCODE   ChildCode;
 POINTER ArgPointer;
 int     Low;
 int     High;
@@ -588,7 +588,7 @@ int     LoopSliceCount;
 }
 /* ------------------------------------------------------------ */
 void SpawnBlockSlices( ChildCode, ArgPointer, Low, High, LoopSliceCount )
-void    (*ChildCode)();
+PCODE   ChildCode;
 POINTER ArgPointer;
 int     Low;
 int     High;
@@ -606,7 +606,7 @@ int     LoopSliceCount;
 
 void SpawnCachedSlices( ChildCode, ArgPointer, Low, High, LoopSliceCount ,Size,
                                 Norm)
-void    (*ChildCode)();
+PCODE   ChildCode;
 POINTER ArgPointer;
 int     Low;
 int     High;
@@ -627,7 +627,7 @@ int     Norm;
 
 /* ------------------------------------------------------------ */
 void SpawnGssSlices( ChildCode, ArgPointer, Low, High, MinSlice, LoopSliceCount)
-void    (*ChildCode)();
+PCODE   ChildCode;
 POINTER ArgPointer;
 int     Low;
 int     High;
@@ -650,7 +650,7 @@ int     LoopSliceCount;
 /* ------------------------------------------------------------ */
 void SpawnSlices( LoopType, ChildCode, ArgPointer, Low, High, MinSlice, LoopSliceCount )
 int     LoopType;         /* CONCUR_VECTOR or CONCUR */
-void    (*ChildCode)();
+PCODE   ChildCode;
 POINTER ArgPointer;
 int     Low;
 int     High;

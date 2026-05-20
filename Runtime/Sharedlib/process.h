@@ -30,10 +30,12 @@
 
 #include "process-implementation.h"
 
+typedef void (*PCODE)(POINTER, int, int, int);
+
 struct ActRec {
   POINTER ArgPointer;                     /* TASK ARGUMENT               */
   int     AuxArgument;                    /* AUXILIARY TASK ARGUMENT     */
-  void    (*ChildCode)();                 /* TASK ADDRESS                */
+  PCODE   ChildCode;                      /* TASK ADDRESS                */
   int     SliceBounds[3];                 /* LOOP SLICE CONTROL INFO     */
   struct  ActRec *NextAR;                 /* FORWARD QUEUE LINK          */
   int     Done;                           /* IS THIS TASK DONE YET?      */
@@ -156,7 +158,7 @@ struct SdbxValue {
   unsigned char  Kind;
   unsigned char  ArrayType;
   unsigned char  Active;
-  void           (*PrintRoutine)();
+  void           (*PrintRoutine)(POINTER);
 
   union {
     int     InT;
@@ -209,10 +211,10 @@ extern void    Wait PROTO((int));
 extern void    Sync PROTO((struct ActRec*,struct ActRec*));
 
 extern void    InitSpawn PROTO((void));
-extern void    SpawnSlices PROTO((int, void (*ChildCode)(void),POINTER,int,int,int,int));
+extern void    SpawnSlices PROTO((int,PCODE ChildCode,POINTER,int,int,int,int));
 extern void    OptSpawnSlices PROTO((struct ActRec*,int));
 extern void    OptSpawnSlicesFast PROTO((struct ActRec*,int));
-extern void    BuildSlices PROTO((int,struct ActRec**,int*,void (*ChildCode)(void),POINTER,int,int,int,int,int,int));
+extern void    BuildSlices PROTO((int,struct ActRec**,int*,PCODE ChildCode,POINTER,int,int,int,int,int,int));
 
 extern void    EnterWorker PROTO((int));
 extern void    LeaveWorker PROTO((void));

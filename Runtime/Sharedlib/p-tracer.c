@@ -134,7 +134,7 @@ static void
 TraceDisplay(Entry,args,writer,f,ID)
      TraceTableEntry    *Entry;
      POINTER            args;
-     void               ((*writer)());
+     void               ((*writer)(POINTER));
      char               *f;
      int                *ID;
 {
@@ -185,7 +185,7 @@ static void
 TraceInteractive(Entry,args,writer,f,ID)
      TraceTableEntry    *Entry;
      POINTER            args;
-     void               ((*writer)());
+     void               ((*writer)(POINTER));
      char               *f;
      int                *ID;
 {
@@ -360,7 +360,7 @@ TraceInteractive(Entry,args,writer,f,ID)
 void
 _Tracer_(args,writer,f,ID)
      POINTER    args;
-     void       ((*writer)());
+     void       ((*writer)(POINTER));
      char       *f;
      int        *ID;
 {

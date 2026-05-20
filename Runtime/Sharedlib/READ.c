@@ -1,35 +1,38 @@
 #include <stdio.h>
 #include "sisalrt.h"
 
+struct Args15;
+struct Args16;
+
 #undef _READ
-void         _READ();
+void         _READ PROTO((void *));
 int RecompileTheModuleDefining_READ = 0;
 #undef _PIPE
-void         _PIPE();
+void         _PIPE PROTO((void *));
 int RecompileTheModuleDefining_PIPE = 0;
 #undef _STDIN
-void         _STDIN();
+void         _STDIN PROTO((void *));
 int RecompileTheModuleDefining_STDIN = 0;
 #undef _ARGV
-void         _ARGV();
+void         _ARGV PROTO((void *));
 int RecompileTheModuleDefining_ARGV = 0;
 #undef _EXIT
-void         _EXIT();
+void         _EXIT PROTO((struct Args15*));
 int RecompileTheModuleDefining_EXIT = 0;
 #undef _LSHIFT
-void         _LSHIFT();
+void         _LSHIFT PROTO((struct Args16*));
 int RecompileTheModuleDefining_LSHIFT = 0;
 #undef _RSHIFT
-void         _RSHIFT();
+void         _RSHIFT PROTO((struct Args16*));
 int RecompileTheModuleDefining_RSHIFT = 0;
 #undef _BITOR
-void         _BITOR();
+void         _BITOR PROTO((struct Args16*));
 int RecompileTheModuleDefining_BITOR = 0;
 #undef _BITAND
-void         _BITAND();
+void         _BITAND PROTO((struct Args16*));
 int RecompileTheModuleDefining_BITAND = 0;
 #undef _BITXOR
-void         _BITXOR();
+void         _BITXOR PROTO((struct Args16*));
 int RecompileTheModuleDefining_BITXOR = 0;
 
 struct Args12 {   
