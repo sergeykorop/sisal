@@ -22,8 +22,8 @@ void InitErrorSystem()
   MY_SINIT_LOCK(ErrorLock);
 }
 
-
-int SisalError( Message1, Message2 )
+ATTR_NORETURN
+void SisalError( Message1, Message2 )
 char *Message1;
 char *Message2;
 {
@@ -36,6 +36,4 @@ char *Message2;
     SdbxMonitor( SDBX_ERR );
 
   AbortParallel();
-
-  return 0;
 }

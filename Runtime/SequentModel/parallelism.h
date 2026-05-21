@@ -66,6 +66,7 @@ void StopWorkers()
   end_parallel();
 }
 
+ATTR_NORETURN
 void AbortParallel() 
 { 
   abort_parallel(); 
@@ -99,6 +100,7 @@ void StopWorkers()
   LeaveWorker();
 }
 
+ATTR_NORETURN
 void AbortParallel()
 {
   (void)kill( 0, SIGKILL );

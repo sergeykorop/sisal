@@ -107,6 +107,7 @@ void StopWorkers()
   LeaveWorker();
 }
 
+ATTR_NORETURN
 void AbortParallel()
 {
   (void)kill( 0, SIGKILL );

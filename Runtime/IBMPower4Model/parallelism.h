@@ -116,7 +116,7 @@ void StartWorkers()
 
 }
 
-
+ATTR_NORETURN
 void AbortParallel() 
 { 
   exit( 1 ); 

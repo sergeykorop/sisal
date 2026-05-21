@@ -85,6 +85,7 @@ void StopWorkers()
     TSKWAIT( TaskInfo[i] );
 }
 
+ATTR_NORETURN
 void AbortParallel()
 {
   ERREXIT();

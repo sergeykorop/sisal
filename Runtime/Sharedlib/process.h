@@ -202,7 +202,7 @@ extern void    ReleaseSharedMemory PROTO((void));
 extern void    StartWorkers PROTO((void));
 extern void    StartWorkersWithEntry PROTO((void (*entry)()));
 extern void    StopWorkers PROTO((void));
-extern void    AbortParallel PROTO((void));
+extern void    AbortParallel PROTO_NORET((void));
 
 extern void    DumpRunTimeInfo PROTO((void));
 extern void    InitSisalRunTime PROTO((void));
@@ -354,7 +354,7 @@ extern LOCK_TYPE *Dsa_lock;
 /* ------------------------------------------------------------ */
 
 extern void    InitErrorSystem PROTO((void));
-extern int     SisalError PROTO_NORET((char*,char*));
+extern void    SisalError PROTO_NORET((char*,char*));
 
 extern void    DsaInit PROTO((void));
 extern POINTER Alloc PROTO((int));
