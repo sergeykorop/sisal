@@ -188,6 +188,19 @@ char    *Name;
 {
   register ARRAYP Array = (ARRAYP) Ptr;
 
+#if defined(INTPTR_MAX) && defined(PRIxPTR) && defined(PRIdPTR)
+  /* The closest approximation to the original output by modern means */
+  fprintf( stderr, "TOKEN: (%s,lo=%d,size=%d)\n",
+           Name, Array->LoBound, Array->Size   );
+  fprintf( stderr, "Array: 0x%" PRIxPTR " (%" PRIdPTR "), sizeof: %zu\n",(uintptr_t)Array,(intptr_t)Array,sizeof(*Array));
+  fprintf( stderr, "  LoBound: %d (0x%x)\n",Array->LoBound,Array->LoBound);
+  fprintf( stderr, "  Size: %d (0x%x)\n",Array->Size,Array->Size);
+  fprintf( stderr, "  Phys: 0x%" PRIxPTR " (%" PRIdPTR ")\n",(uintptr_t)Array->Phys,(intptr_t)Array->Phys);
+  fprintf( stderr, "  Mutex: %p\n",(void *)&Array->Mutex);
+  fprintf( stderr, "  RefCount: %d\n",Array->RefCount);
+  fprintf( stderr, "  Mutable: %d\n",Array->Mutable);
+#else
+  /* Historical code with undefined behavior left as a fallback */
   fprintf( stderr, "TOKEN: (%s,lo=%d,size=%d)\n",
            Name, Array->LoBound, Array->Size   );
   fprintf( stderr, "Array: 0x%x (%d), sizeof: %d\n",Array,Array,sizeof(*Array));
@@ -197,6 +210,7 @@ char    *Name;
   fprintf( stderr, "  Mutex: %d\n",Array->Mutex);
   fprintf( stderr, "  RefCount: %d\n",Array->RefCount);
   fprintf( stderr, "  Mutable: %d\n",Array->Mutable);
+#endif
   fflush(stderr);
 }
 

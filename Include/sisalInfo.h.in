@@ -67,6 +67,14 @@
 #include <float.h>
 #endif
 
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+
 #define SISAL_BANNER "@host@ SISAL 1.2 (@model@)"
 
 /* ----------------------------------------------- */
